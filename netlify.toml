@@ -1,0 +1,13 @@
+# Netlify deploy config (SPEC §9). Static site, no build step.
+[build]
+  publish = "."
+  command = ""
+
+# Single-page app: only one route, so no SPA fallback redirect is needed.
+# Security headers (defensive; tighten CSP once Firebase host is known, §3).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "no-referrer"

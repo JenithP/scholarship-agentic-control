@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+
+# build / cache
+dist/
+.cache/
+.parcel-cache/
+
+# env / secrets (Firebase config goes here later, never hardcoded)
+.env
+.env.*
+!.env.example
+
+# editor / OS / tooling
+.claude/settings.local.json
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+npm-debug.log*
+
+# downloaded experiment logs (local dev artifacts)
+session-log-*.json

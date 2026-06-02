@@ -1,0 +1,12 @@
+{
+  "name": "scholarship-agentic-control",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Research stimulus: agentic-AI autonomy level vs. user control/agency (scholarship selection).",
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes serve -l 5000 .",
+    "dev": "npx --yes serve -l 5000 ."
+  },
+  "license": "UNLICENSED"
+}
