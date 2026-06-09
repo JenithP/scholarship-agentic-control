@@ -3,7 +3,22 @@
   publish = "."
   command = ""
 
-# Single-page app: only one route, so no SPA fallback redirect is needed.
+# Path-based condition routes. /c1, /c2, /c3 each serve the same app shell;
+# src/app.js reads window.location.pathname and runs that single condition.
+# status = 200 is a rewrite (URL stays /c1), so the path survives for routing.
+[[redirects]]
+  from = "/c1"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/c2"
+  to = "/index.html"
+  status = 200
+[[redirects]]
+  from = "/c3"
+  to = "/index.html"
+  status = 200
+
 # Security headers (defensive; tighten CSP once Firebase host is known, §3).
 [[headers]]
   for = "/*"

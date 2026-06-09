@@ -23,7 +23,10 @@ const CONDITION_INTRO = {
 export function start() {
   const root = document.getElementById('app');
   const params = readParams();
-  const conditionOrder = parseOrder(params.cond);
+  // Path-based routing: /c1, /c2, /c3 each run that single condition (setA).
+  // Root path keeps the full 3-condition flow driven by the `cond` param.
+  const route = parseRoute();
+  const conditionOrder = route ? [route] : parseOrder(params.cond);
 
   const logger = new ConsoleLogger();
   logger.setContext({
@@ -174,6 +177,12 @@ function readParams() {
   if (!out.PROLIFIC_PID) out.PROLIFIC_PID = 'LOCAL_DEV';
   if (!out.STUDY_ID) out.STUDY_ID = 'LOCAL_STUDY';
   return out;
+}
+
+/** Map the URL path to a single condition: /c1 → "C1". Null = no match (root). */
+function parseRoute() {
+  const m = window.location.pathname.match(/\/c([123])(?:\.html)?\/?$/i);
+  return m ? `C${m[1]}` : null;
 }
 
 /** Parse "C2-C1-C3" → ["C2","C1","C3"]; fall back to default on bad input. */
