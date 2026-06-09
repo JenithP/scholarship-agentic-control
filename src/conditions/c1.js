@@ -146,37 +146,40 @@ function toRow(d) {
   };
 }
 
-/** A single applicant review row: card + recommendation + approve/reject. */
+/**
+ * A single applicant review row: the applicant card with the agent's
+ * recommendation and the approve/reject buttons inline beneath it (not in a
+ * separate side panel — the decision sits right next to the recommendation).
+ */
 function reviewRow(a, verdict, onDecide) {
+  const card = applicantCard(a);
   const approveBtn = button('Approve', () => decide(true), 'approve');
   const rejectBtn = button('Reject', () => decide(false), 'reject');
-  const status = el('div', { class: 'decision-status' });
-  const row = el('div', { class: 'c1-row' }, [
-    applicantCard(a),
-    el('div', { class: 'c1-row-side' }, [
-      recommendationBadge(verdict),
-      el('div', { class: 'decision-buttons' }, [approveBtn, rejectBtn]),
-      status,
-    ]),
-  ]);
+  const status = el('span', { class: 'decision-status' });
+  card.appendChild(el('div', { class: 'c1-decision' }, [
+    recommendationBadge(verdict),
+    approveBtn,
+    rejectBtn,
+    status,
+  ]));
 
   function decide(approved) {
-    row.classList.add(approved ? 'is-approved' : 'is-rejected');
+    card.classList.add(approved ? 'is-approved' : 'is-rejected');
     setDisabled(approveBtn, true);
     setDisabled(rejectBtn, true);
     status.textContent = approved ? '✓ Approved' : '✕ Rejected';
     onDecide(approved);
   }
 
-  return { row };
+  return { row: card };
 }
 
-/** Agent recommendation badge, colored by verdict band (reasoning.js). */
+/** Agent recommendation, colored by verdict band (reasoning.js); inline. */
 function recommendationBadge(verdict) {
   const cls = verdict.tag === 'STRONG' ? 'rec-strong'
     : verdict.tag === 'CONSIDER' ? 'rec-consider' : 'rec-weak';
-  return el('div', { class: `rec-badge ${cls}` }, [
-    el('span', { class: 'rec-label', text: 'Agent recommendation' }),
+  return el('span', { class: `rec-badge ${cls}` }, [
+    el('span', { class: 'rec-label', text: 'Agent recommendation:' }),
     el('span', { class: 'rec-text', text: verdict.rec }),
   ]);
 }

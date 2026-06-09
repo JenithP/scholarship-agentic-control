@@ -131,33 +131,26 @@ body {
 
 /* --- C1 review list -------------------------------------------------------- */
 .c1-list { margin-top: 1rem; display: flex; flex-direction: column; gap: .9rem; }
-.c1-row {
-  display: grid; grid-template-columns: 1fr 240px; gap: 1rem; align-items: stretch;
-  animation: rowIn .25s ease;
-}
-@media (max-width: 760px) { .c1-row { grid-template-columns: 1fr; } }
+.applicant-card { animation: rowIn .25s ease; }
 @keyframes rowIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
-.c1-row-side {
-  display: flex; flex-direction: column; justify-content: space-between; gap: .75rem;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 1rem;
+.applicant-card.is-approved { border-color: var(--approve); }
+.applicant-card.is-rejected { border-color: var(--reject); }
+
+/* Recommendation + decision buttons sit inline beneath the applicant's text. */
+.c1-decision {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .75rem;
+  margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);
 }
-.c1-row.is-approved .c1-row-side,
-.c1-row.is-approved .applicant-card { border-color: var(--approve); }
-.c1-row.is-rejected .c1-row-side,
-.c1-row.is-rejected .applicant-card { border-color: var(--reject); }
+.c1-decision .btn { padding: .5rem 1rem; }
+.decision-status { font-weight: 700; }
+.applicant-card.is-approved .decision-status { color: var(--approve); }
+.applicant-card.is-rejected .decision-status { color: var(--reject); }
 
-.decision-buttons { display: flex; gap: .5rem; }
-.decision-buttons .btn { flex: 1; padding: .5rem .8rem; }
-.decision-status { font-weight: 700; min-height: 1.2em; }
-.c1-row.is-approved .decision-status { color: var(--approve); }
-.c1-row.is-rejected .decision-status { color: var(--reject); }
-
-.rec-badge { display: flex; flex-direction: column; gap: .25rem; }
-.rec-label { color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; }
+.rec-badge { display: inline-flex; align-items: baseline; gap: .4rem; }
+.rec-label { color: var(--muted); font-size: .8rem; }
 .rec-text { font-weight: 700; }
 .rec-strong .rec-text { color: var(--approve); }
 .rec-consider .rec-text { color: var(--stop); }
