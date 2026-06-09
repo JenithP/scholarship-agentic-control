@@ -53,6 +53,9 @@ body {
 .btn-reject { background: var(--reject); color: #fff; }
 .btn-stop { background: var(--stop); color: #1a1205; font-weight: 700; }
 .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn:disabled, .btn.is-disabled { opacity: .45; cursor: not-allowed; filter: none; }
+.btn:disabled:hover, .btn.is-disabled:hover { filter: none; }
+.btn:disabled:active, .btn.is-disabled:active { transform: none; }
 
 /* --- intro / framing / end cards ------------------------------------------ */
 .intro-card, .framing-card, .end-card {
@@ -125,6 +128,51 @@ body {
 .stat-value { font-size: 1.25rem; font-weight: 700; }
 .applicant-essay { margin: .5rem 0; }
 .applicant-flag { margin: .5rem 0 0; color: var(--muted); font-style: italic; }
+
+/* --- C1 review list -------------------------------------------------------- */
+.c1-list { margin-top: 1rem; display: flex; flex-direction: column; gap: .9rem; }
+.c1-row {
+  display: grid; grid-template-columns: 1fr 240px; gap: 1rem; align-items: stretch;
+  animation: rowIn .25s ease;
+}
+@media (max-width: 760px) { .c1-row { grid-template-columns: 1fr; } }
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.c1-row-side {
+  display: flex; flex-direction: column; justify-content: space-between; gap: .75rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem;
+}
+.c1-row.is-approved .c1-row-side,
+.c1-row.is-approved .applicant-card { border-color: var(--approve); }
+.c1-row.is-rejected .c1-row-side,
+.c1-row.is-rejected .applicant-card { border-color: var(--reject); }
+
+.decision-buttons { display: flex; gap: .5rem; }
+.decision-buttons .btn { flex: 1; padding: .5rem .8rem; }
+.decision-status { font-weight: 700; min-height: 1.2em; }
+.c1-row.is-approved .decision-status { color: var(--approve); }
+.c1-row.is-rejected .decision-status { color: var(--reject); }
+
+.rec-badge { display: flex; flex-direction: column; gap: .25rem; }
+.rec-label { color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; }
+.rec-text { font-weight: 700; }
+.rec-strong .rec-text { color: var(--approve); }
+.rec-consider .rec-text { color: var(--stop); }
+.rec-weak .rec-text { color: var(--reject); }
+
+/* --- finalize bar (C1) ----------------------------------------------------- */
+.finalize-bar {
+  position: sticky; bottom: 1rem; z-index: 5;
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: .9rem 1.1rem;
+}
+.finalize-bar.is-ready { border-color: var(--approve); }
+.finalize-hint { color: var(--muted); }
+.finalize-count { font-weight: 700; color: var(--text); }
 
 /* --- terminal -------------------------------------------------------------- */
 .terminal {
