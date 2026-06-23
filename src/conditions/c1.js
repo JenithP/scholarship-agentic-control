@@ -1,23 +1,26 @@
 // conditions/c1.js — C1: low-autonomy / high-control (SPEC §2).
 //
-// The agent evaluates all 8 applicants; each one appears in a review list as it
-// is scored, tagged with the agent's recommendation (recommend / borderline /
-// do not recommend). Every applicant row carries its own [Approve] [Reject]
-// buttons — the participant must decide on each one individually. Only after all
-// 8 have a decision does the final [Approve selection] button unlock. The final
-// 3 are drawn from the applicants the participant approved (control is real, not
-// token). Intended feeling: approval fatigue — you cannot finalize until you
-// have personally signed off on every applicant, one by one.
+// The agent's reasoning streams into a single terminal, evaluating each of the 8
+// applicants in turn. When a recommendation line is typed (recommend /
+// borderline / do not recommend), [Approve] [Reject] buttons appear inline right
+// next to that line — but they stay LOCKED while the agent is still evaluating.
+// Only once every applicant has been evaluated do the inline controls unlock, so
+// the participant must read the whole log through first and then scroll back up
+// to review and decide on each applicant individually (no rubber-stamping the
+// agent's scoring mid-stream). The final [Approve selection] button unlocks once
+// all 8 have a decision. The final 3 are drawn from the applicants the
+// participant approved (control is real, not token). Intended feeling: approval
+// fatigue + deliberate, considered review.
 
 import { CONFIG } from '../config.js';
-import { componentScores } from '../scoring.js';
 import { applicantScript, finalScript, selectionReason } from '../scripts/reasoning.js';
 import { streamLines, StreamRun, makeSkippable } from '../typewriter.js';
-import { el, clear, button, applicantCard, terminal, finalResult, conditionBanner } from '../ui.js';
+import { el, clear, button, terminal, finalResult, conditionBanner } from '../ui.js';
 
-const BANNER = 'The agent evaluates each applicant and posts its recommendation below. '
-  + 'Approve or reject every applicant individually — the Approve selection button '
-  + 'unlocks only once you have decided on all of them.';
+const BANNER = 'The agent evaluates all applicants one by one in the log below. Read through '
+  + 'its reasoning first — the approve/reject controls stay locked until it finishes. Then '
+  + 'scroll back up and decide on each applicant; the Approve selection button unlocks only '
+  + 'once you have decided on all of them.';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -29,14 +32,13 @@ export async function runC1({ container, applicants, logger }) {
   const decisions = []; // { applicant, score, components, approved }
 
   const progress = el('div', { class: 'progress-pill' });
-  const { panel, body } = terminal('agent reasoning — evaluating all applicants');
-  const list = el('div', { class: 'c1-list' });
+  const { panel, body } = terminal('agent reasoning — step-by-step');
+  panel.classList.add('terminal-tall');
   const actionSlot = el('div', { class: 'action-slot' });
 
   container.appendChild(conditionBanner('C1', BANNER));
   container.appendChild(progress);
   container.appendChild(panel);
-  container.appendChild(list);
   container.appendChild(actionSlot);
 
   // The finalize bar exists from the start but stays disabled until every
@@ -55,8 +57,9 @@ export async function runC1({ container, applicants, logger }) {
   ]);
 
   let decidedCount = 0;
+  const unlockers = []; // per-applicant fns that enable the inline decision
 
-  // --- Stream the agent evaluating each applicant; reveal a review row per one.
+  // --- Stream the agent evaluating each applicant; attach the decision inline.
   for (let i = 0; i < applicants.length; i++) {
     const a = applicants[i];
     progress.textContent = `Evaluating applicant ${i + 1} of ${applicants.length}`;
@@ -69,11 +72,12 @@ export async function runC1({ container, applicants, logger }) {
     });
     detach();
 
-    // Reveal this applicant's review row with the agent's recommendation and a
-    // per-applicant approve/reject decision.
+    // The last typed line is the recommendation ("…: do not recommend"). Attach
+    // the approve/reject buttons inline, right next to it.
+    const recLine = body.lastChild;
     const decision = { applicant: a, score, components, approved: null };
     decisions.push(decision);
-    const { row } = reviewRow(a, verdict, (approved) => {
+    const unlock = attachDecision(recLine, (approved) => {
       if (decision.approved !== null) return; // already decided
       decision.approved = approved;
       decidedCount += 1;
@@ -88,20 +92,27 @@ export async function runC1({ container, applicants, logger }) {
         finalizeBar.classList.add('is-ready');
       }
     });
-    list.appendChild(row);
-    row.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+    unlockers.push(unlock);
+    body.scrollTop = body.scrollHeight;
     await sleep(t.autoStepDelayMs);
   }
 
-  // --- All evaluated: post the gating instruction and show the finalize bar. --
-  progress.textContent = 'Decide on all applicants to finalize';
+  // --- All evaluated: unlock the inline controls and prompt a review pass. ----
+  progress.textContent = 'Review each applicant to finalize';
   const noteRun = new StreamRun();
   await streamLines(body, [
     '',
     `> all ${applicants.length} applicants evaluated.`,
-    '> approve or reject each applicant above.',
+    '> review controls are now unlocked.',
+    '> scroll up and approve or reject each recommendation.',
     '> the Approve selection button unlocks once all are decided.',
   ], { charDelayMs: t.charDelayMs, lineDelayMs: t.lineDelayMs, run: noteRun });
+
+  // Unlock every inline decision, then nudge back to the top so the participant
+  // re-reads from applicant 1 rather than deciding from the bottom up.
+  unlockers.forEach((fn) => fn());
+  body.classList.add('is-reviewable');
+  body.scrollTop = 0;
 
   actionSlot.appendChild(finalizeBar);
 
@@ -124,7 +135,7 @@ export async function runC1({ container, applicants, logger }) {
     .sort((x, y) => y.score - x.score);
   const selected = pool.slice(0, CONFIG.selectCount).map(toRow);
 
-  await showFinal(actionSlot, list, panel, progress, selected, logger, t);
+  await showFinal(actionSlot, panel, progress, selected, logger, t);
 
   return {
     condition: 'C1',
@@ -139,49 +150,35 @@ export async function runC1({ container, applicants, logger }) {
 
 function toRow(d) {
   // Rebuild a ranked-row shape for the shared final renderer.
-  return {
-    applicant: d.applicant,
-    score: d.score,
-    components: d.components || componentScores(d.applicant),
-  };
+  return { applicant: d.applicant, score: d.score, components: d.components };
 }
 
 /**
- * A single applicant review row: the applicant card with the agent's
- * recommendation and the approve/reject buttons inline beneath it (not in a
- * separate side panel — the decision sits right next to the recommendation).
+ * Append inline approve/reject buttons to a streamed recommendation line. The
+ * buttons start LOCKED (so the participant reads the whole log before deciding)
+ * and the returned `unlock()` enables them once evaluation finishes.
  */
-function reviewRow(a, verdict, onDecide) {
-  const card = applicantCard(a);
-  const approveBtn = button('Approve', () => decide(true), 'approve');
-  const rejectBtn = button('Reject', () => decide(false), 'reject');
+function attachDecision(lineEl, onDecide) {
+  const approveBtn = button('Approve', (e) => { e.stopPropagation(); decide(true); }, 'approve');
+  const rejectBtn = button('Reject', (e) => { e.stopPropagation(); decide(false); }, 'reject');
   const status = el('span', { class: 'decision-status' });
-  card.appendChild(el('div', { class: 'c1-decision' }, [
-    recommendationBadge(verdict),
-    approveBtn,
-    rejectBtn,
-    status,
-  ]));
+  setDisabled(approveBtn, true);
+  setDisabled(rejectBtn, true);
+  lineEl.appendChild(el('span', { class: 'term-decision' }, [approveBtn, rejectBtn, status]));
 
   function decide(approved) {
-    card.classList.add(approved ? 'is-approved' : 'is-rejected');
     setDisabled(approveBtn, true);
     setDisabled(rejectBtn, true);
-    status.textContent = approved ? '✓ Approved' : '✕ Rejected';
+    status.textContent = approved ? '✓ approved' : '✕ rejected';
+    lineEl.classList.add(approved ? 'is-approved' : 'is-rejected');
     onDecide(approved);
   }
 
-  return { row: card };
-}
-
-/** Agent recommendation, colored by verdict band (reasoning.js); inline. */
-function recommendationBadge(verdict) {
-  const cls = verdict.tag === 'STRONG' ? 'rec-strong'
-    : verdict.tag === 'CONSIDER' ? 'rec-consider' : 'rec-weak';
-  return el('span', { class: `rec-badge ${cls}` }, [
-    el('span', { class: 'rec-label', text: 'Agent recommendation:' }),
-    el('span', { class: 'rec-text', text: verdict.rec }),
-  ]);
+  return function unlock() {
+    if (lineEl.classList.contains('is-approved') || lineEl.classList.contains('is-rejected')) return;
+    setDisabled(approveBtn, false);
+    setDisabled(rejectBtn, false);
+  };
 }
 
 function setDisabled(btn, disabled) {
@@ -189,9 +186,8 @@ function setDisabled(btn, disabled) {
   btn.classList.toggle('is-disabled', disabled);
 }
 
-async function showFinal(actionSlot, list, panel, progress, selected, logger, t) {
+async function showFinal(actionSlot, panel, progress, selected, logger, t) {
   progress.textContent = 'Compiling final selection…';
-  clear(list);
   clear(actionSlot);
   const { panel: fp, body } = terminal('agent reasoning — final');
   panel.replaceWith(fp);
@@ -207,15 +203,10 @@ async function showFinal(actionSlot, list, panel, progress, selected, logger, t)
   logger.logEvent('view_result', {
     payload: { selectedIds: selected.map((r) => r.applicant.id) },
   });
-  list.appendChild(finalResult(selected, selectionReason));
+  actionSlot.appendChild(finalResult(selected, selectionReason));
 
-  await waitContinue(actionSlot);
-}
-
-function waitContinue(slot) {
-  return new Promise((resolve) => {
-    clear(slot);
-    slot.appendChild(el('div', { class: 'continue-bar' }, [
+  await new Promise((resolve) => {
+    actionSlot.appendChild(el('div', { class: 'continue-bar' }, [
       button('Continue', () => resolve(), 'primary'),
     ]));
   });

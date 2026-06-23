@@ -129,32 +129,26 @@ body {
 .applicant-essay { margin: .5rem 0; }
 .applicant-flag { margin: .5rem 0 0; color: var(--muted); font-style: italic; }
 
-/* --- C1 review list -------------------------------------------------------- */
-.c1-list { margin-top: 1rem; display: flex; flex-direction: column; gap: .9rem; }
-.applicant-card { animation: rowIn .25s ease; }
-@keyframes rowIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: none; }
-}
-.applicant-card.is-approved { border-color: var(--approve); }
-.applicant-card.is-rejected { border-color: var(--reject); }
+/* --- C1 inline decisions (inside the terminal log) ------------------------- */
+.terminal-tall .term-body { max-height: 560px; }
 
-/* Recommendation + decision buttons sit inline beneath the applicant's text. */
-.c1-decision {
-  display: flex; align-items: center; flex-wrap: wrap; gap: .75rem;
-  margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);
+/* Approve/reject buttons sit inline right next to the recommendation line. */
+.term-decision { display: inline-flex; gap: .4rem; margin-left: .9rem; vertical-align: middle; }
+.term-decision .btn {
+  padding: .15rem .65rem; font-size: .72rem; font-weight: 700;
+  border-radius: 6px; line-height: 1.5;
 }
-.c1-decision .btn { padding: .5rem 1rem; }
-.decision-status { font-weight: 700; }
-.applicant-card.is-approved .decision-status { color: var(--approve); }
-.applicant-card.is-rejected .decision-status { color: var(--reject); }
+.decision-status { margin-left: .5rem; font-weight: 700; }
+.term-line.is-approved { color: #b9f6ca; }
+.term-line.is-approved .decision-status { color: #b9f6ca; }
+.term-line.is-rejected { color: #fca5a5; }
+.term-line.is-rejected .decision-status { color: #fca5a5; }
 
-.rec-badge { display: inline-flex; align-items: baseline; gap: .4rem; }
-.rec-label { color: var(--muted); font-size: .8rem; }
-.rec-text { font-weight: 700; }
-.rec-strong .rec-text { color: var(--approve); }
-.rec-consider .rec-text { color: var(--stop); }
-.rec-weak .rec-text { color: var(--reject); }
+/* Once review is unlocked, gently flag recommendation lines still awaiting a
+   decision so the participant can spot what's left as they scroll back up. */
+.term-body.is-reviewable .term-line:has(.term-decision):not(.is-approved):not(.is-rejected) {
+  border-left: 2px solid var(--stop); padding-left: .5rem; margin-left: -.5rem;
+}
 
 /* --- finalize bar (C1) ----------------------------------------------------- */
 .finalize-bar {
