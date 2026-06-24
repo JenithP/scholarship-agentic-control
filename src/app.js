@@ -24,7 +24,8 @@ export function start() {
   const root = document.getElementById('app');
   const params = readParams();
   // Path-based routing: /c1, /c2, /c3 each run that single condition (setA).
-  // Root path keeps the full 3-condition flow driven by the `cond` param.
+  // Otherwise the `cond` param drives it: one condition (e.g. cond=C3) runs that
+  // alone; a full permutation (cond=C1-C2-C3) runs the whole within-subject flow.
   const route = parseRoute();
   const conditionOrder = route ? [route] : parseOrder(params.cond);
 
@@ -85,7 +86,9 @@ class App {
         + 'evaluate 8 applicants and select 3 recipients. Your role and the agent’s '
         + 'autonomy change from round to round.' }),
       el('ul', { class: 'intro-points' }, [
-        el('li', { text: 'There are 3 rounds. Each uses a different group of 8 applicants.' }),
+        el('li', { text: this.order.length === 1
+          ? 'This round uses a group of 8 applicants.'
+          : `There are ${this.order.length} rounds. Each uses a different group of 8 applicants.` }),
         el('li', { text: 'Read the agent’s reasoning as it streams, and act when prompted.' }),
         el('li', { text: 'There are no right answers — we are interested in your experience.' }),
       ]),
@@ -185,13 +188,22 @@ function parseRoute() {
   return m ? `C${m[1]}` : null;
 }
 
-/** Parse "C2-C1-C3" → ["C2","C1","C3"]; fall back to default on bad input. */
+/**
+ * Parse the `cond` param into a sequence of conditions to run. Accepts any
+ * subset (1–3) so a condition can run fully standalone — `cond=C3` (or `cond=3`)
+ * runs ONLY C3, `cond=C1-C2-C3` (or `1-2-3`) runs the full within-subject flow.
+ * Bare digits map to C-prefixed codes; duplicates are dropped, order preserved.
+ * Falls back to the default order on empty/invalid input.
+ */
 function parseOrder(cond) {
   const valid = new Set(['C1', 'C2', 'C3']);
-  const parts = String(cond || '').toUpperCase().split('-').map((s) => s.trim());
-  const ok = parts.length === 3 && parts.every((p) => valid.has(p))
-    && new Set(parts).size === 3;
-  return ok ? parts : CONFIG.defaultConditionOrder.split('-');
+  const parts = String(cond || '').toUpperCase().split('-')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((s) => (/^[123]$/.test(s) ? `C${s}` : s));
+  const unique = [...new Set(parts)];
+  const ok = unique.length >= 1 && unique.length <= 3 && unique.every((p) => valid.has(p));
+  return ok ? unique : CONFIG.defaultConditionOrder.split('-');
 }
 
 function completionCode(ctx) {
