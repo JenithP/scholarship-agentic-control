@@ -1,7 +1,7 @@
 // conditions/c2.js — C2: mid-autonomy / selective-control (SPEC §2).
 //
 // The agent proposes a plan (criteria + weights); the participant gives ONE
-// approval. The agent then auto-evaluates all 8. A persistent [Stop & intervene]
+// approval. The agent then auto-evaluates all applicants. A persistent [Stop & intervene]
 // button is always visible — the participant CAN step in but need not. Intended
 // feeling: control held in reserve. Getting this standing-ability-to-intervene
 // right is one of the two most important manipulations (SPEC §2).
@@ -38,7 +38,7 @@ export async function runC2({ container, applicants, logger }) {
   // --- Step 1: propose plan, await the single approval -----------------------
   const planRun = new StreamRun();
   const detachPlan = makeSkippable(body, planRun);
-  await streamLines(body, [''].concat(planScript(criteria).lines), {
+  await streamLines(body, [''].concat(planScript(criteria, applicants.length).lines), {
     charDelayMs: t.charDelayMs, lineDelayMs: t.lineDelayMs, run: planRun,
   });
   detachPlan();

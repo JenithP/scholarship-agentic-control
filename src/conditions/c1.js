@@ -8,7 +8,7 @@
 // the participant must read the whole log through first and then scroll back up
 // to review and decide on each applicant individually (no rubber-stamping the
 // agent's scoring mid-stream). The final [Approve selection] button unlocks once
-// all 8 have a decision. The final 3 are drawn from the applicants the
+// all applicants have a decision. The final 3 are drawn from the applicants the
 // participant approved (control is real, not token). Intended feeling: approval
 // fatigue + deliberate, considered review.
 

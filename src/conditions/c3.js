@@ -1,7 +1,7 @@
 // conditions/c3.js — C3: high-autonomy / low-control (SPEC §2).
 //
 // The participant enters a goal and nothing else. The agent then runs fully
-// automatically: it acknowledges the goal, evaluates all 8, and presents the 3
+// automatically: it acknowledges the goal, evaluates all applicants, and presents the 3
 // recipients. No approvals, no stop button, no intervention. Intended feeling:
 // hands-off ease / loss of grip.
 
@@ -55,7 +55,7 @@ export async function runC3({ container, applicants, logger }) {
   // --- Step 2: fully automatic run (no controls) -----------------------------
   const ackRun = new StreamRun();
   const detachAck = makeSkippable(body, ackRun);
-  await streamLines(body, [''].concat(goalAckScript(goalText)), {
+  await streamLines(body, [''].concat(goalAckScript(goalText, applicants.length)), {
     charDelayMs: t.charDelayMs, lineDelayMs: t.lineDelayMs, run: ackRun,
   });
 

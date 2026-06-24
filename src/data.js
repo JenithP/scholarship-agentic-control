@@ -11,7 +11,7 @@ export async function loadApplicants() {
   return _cache;
 }
 
-/** Get the 8 applicants for a given set key ("setA" | "setB" | "setC"). */
+/** Get the applicants for a given set key ("setA" | "setB" | "setC"). */
 export async function getSet(setKey) {
   const all = await loadApplicants();
   const set = all[setKey];

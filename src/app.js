@@ -83,12 +83,12 @@ class App {
       el('h1', { class: 'intro-title', text: 'Scholarship Selection Committee' }),
       el('p', { class: 'intro-lead', text:
         'You are a scholarship committee officer. For each round, an AI agent will help '
-        + 'evaluate 8 applicants and select 3 recipients. Your role and the agent’s '
+        + 'evaluate 7 applicants and select 3 recipients. Your role and the agent’s '
         + 'autonomy change from round to round.' }),
       el('ul', { class: 'intro-points' }, [
         el('li', { text: this.order.length === 1
-          ? 'This round uses a group of 8 applicants.'
-          : `There are ${this.order.length} rounds. Each uses a different group of 8 applicants.` }),
+          ? 'This round uses a group of 7 applicants.'
+          : `There are ${this.order.length} rounds. Each uses a different group of 7 applicants.` }),
         el('li', { text: 'Read the agent’s reasoning as it streams, and act when prompted.' }),
         el('li', { text: 'There are no right answers — we are interested in your experience.' }),
       ]),

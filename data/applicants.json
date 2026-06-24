@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "description": "Three balanced applicant sets for the scholarship-selection agentic-AI control experiment. Each set has 8 applicants; participants select 3. Sets are matched on difficulty: each contains the same archetype distribution so no set is easier than another.",
+    "description": "Three balanced applicant sets for the scholarship-selection agentic-AI control experiment. Each set has 7 applicants; participants select 3. Sets are matched on difficulty: each contains the same archetype distribution so no set is easier than another.",
     "scale_notes": {
       "gpa": "0.0-4.5 scale",
       "incomeDecile": "1 = lowest income (most need), 10 = highest income (least need)",
@@ -14,8 +14,7 @@
       "high-need / high-service",
       "borderline-merit / borderline-need (ambiguous)",
       "high-service / average-merit",
-      "strong-essay / weak-metrics",
-      "average-across-the-board (filler)"
+      "strong-essay / weak-metrics"
     ]
   },
 
@@ -26,8 +25,7 @@
     {"id": "A4", "name": "Priya Nair", "gpa": 3.4, "incomeDecile": 2, "volunteerHours": 220, "essaySummary": "Runs a community tutoring program for younger students in her neighborhood.", "flag": "Exceptional service, modest grades.", "archetype": "high-need / high-service"},
     {"id": "A5", "name": "Jonah Reyes", "gpa": 3.6, "incomeDecile": 5, "volunteerHours": 70, "essaySummary": "Solid mid-range profile; no single standout dimension.", "flag": "Borderline on most criteria.", "archetype": "borderline / ambiguous"},
     {"id": "A6", "name": "Sofia Lindqvist", "gpa": 3.5, "incomeDecile": 6, "volunteerHours": 180, "essaySummary": "Volunteer EMT and choir organizer; deeply engaged in civic life.", "flag": "High service, average merit/need.", "archetype": "high-service / average-merit"},
-    {"id": "A7", "name": "Marcus Webb", "gpa": 3.2, "incomeDecile": 3, "volunteerHours": 35, "essaySummary": "Compelling personal narrative about overcoming a learning disability; metrics understate him.", "flag": "Strong essay, weak numbers.", "archetype": "strong-essay / weak-metrics"},
-    {"id": "A8", "name": "Hana Kim", "gpa": 3.5, "incomeDecile": 5, "volunteerHours": 60, "essaySummary": "Reliable, well-rounded applicant without a distinguishing feature.", "flag": "Average across the board.", "archetype": "average / filler"}
+    {"id": "A7", "name": "Marcus Webb", "gpa": 3.2, "incomeDecile": 3, "volunteerHours": 35, "essaySummary": "Compelling personal narrative about overcoming a learning disability; metrics understate him.", "flag": "Strong essay, weak numbers.", "archetype": "strong-essay / weak-metrics"}
   ],
 
   "setB": [
@@ -37,8 +35,7 @@
     {"id": "B4", "name": "Leila Haddad", "gpa": 3.3, "incomeDecile": 2, "volunteerHours": 240, "essaySummary": "Founded a refugee-family mentorship circle; hundreds of service hours.", "flag": "Exceptional service, modest grades.", "archetype": "high-need / high-service"},
     {"id": "B5", "name": "Connor Pratt", "gpa": 3.5, "incomeDecile": 5, "volunteerHours": 65, "essaySummary": "Steady mid-range applicant; no single standout dimension.", "flag": "Borderline on most criteria.", "archetype": "borderline / ambiguous"},
     {"id": "B6", "name": "Isabella Conti", "gpa": 3.6, "incomeDecile": 6, "volunteerHours": 175, "essaySummary": "Organizes a city-wide food-bank drive every semester.", "flag": "High service, average merit/need.", "archetype": "high-service / average-merit"},
-    {"id": "B7", "name": "Devon Clarke", "gpa": 3.1, "incomeDecile": 3, "volunteerHours": 40, "essaySummary": "Moving account of recovery from serious illness; resilience not captured by GPA.", "flag": "Strong essay, weak numbers.", "archetype": "strong-essay / weak-metrics"},
-    {"id": "B8", "name": "Grace Yamamoto", "gpa": 3.4, "incomeDecile": 5, "volunteerHours": 55, "essaySummary": "Dependable, well-rounded applicant without a distinguishing feature.", "flag": "Average across the board.", "archetype": "average / filler"}
+    {"id": "B7", "name": "Devon Clarke", "gpa": 3.1, "incomeDecile": 3, "volunteerHours": 40, "essaySummary": "Moving account of recovery from serious illness; resilience not captured by GPA.", "flag": "Strong essay, weak numbers.", "archetype": "strong-essay / weak-metrics"}
   ],
 
   "setC": [
@@ -48,7 +45,6 @@
     {"id": "C4a", "name": "Aisha Diallo", "gpa": 3.4, "incomeDecile": 2, "volunteerHours": 230, "essaySummary": "Coordinates literacy workshops at a women's shelter.", "flag": "Exceptional service, modest grades.", "archetype": "high-need / high-service"},
     {"id": "C5a", "name": "Felix Andersson", "gpa": 3.5, "incomeDecile": 5, "volunteerHours": 68, "essaySummary": "Competent mid-range applicant; nothing that clearly stands out.", "flag": "Borderline on most criteria.", "archetype": "borderline / ambiguous"},
     {"id": "C6a", "name": "Camila Rossi", "gpa": 3.6, "incomeDecile": 6, "volunteerHours": 185, "essaySummary": "Leads environmental cleanups and a youth coding club.", "flag": "High service, average merit/need.", "archetype": "high-service / average-merit"},
-    {"id": "C7a", "name": "Owen Fletcher", "gpa": 3.2, "incomeDecile": 3, "volunteerHours": 38, "essaySummary": "Eloquent essay on caregiving for a disabled parent; numbers don't tell the story.", "flag": "Strong essay, weak numbers.", "archetype": "strong-essay / weak-metrics"},
-    {"id": "C8a", "name": "Mei Tanaka", "gpa": 3.5, "incomeDecile": 5, "volunteerHours": 58, "essaySummary": "Consistent, well-rounded applicant without a distinguishing feature.", "flag": "Average across the board.", "archetype": "average / filler"}
+    {"id": "C7a", "name": "Owen Fletcher", "gpa": 3.2, "incomeDecile": 3, "volunteerHours": 38, "essaySummary": "Eloquent essay on caregiving for a disabled parent; numbers don't tell the story.", "flag": "Strong essay, weak numbers.", "archetype": "strong-essay / weak-metrics"}
   ]
 }

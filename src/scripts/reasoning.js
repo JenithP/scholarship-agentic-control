@@ -51,10 +51,10 @@ function shortEssayRead(a) {
  * The criteria plan the AI proposes in C2 (the single thing the participant
  * approves). Returns { lines, criteria }.
  */
-export function planScript(criteria = CONFIG.criteria) {
+export function planScript(criteria = CONFIG.criteria, total = 8) {
   const lines = [
     '> drafting evaluation plan',
-    '  objective: select 3 of 8 applicants for the scholarship',
+    `  objective: select ${CONFIG.selectCount} of ${total} applicants for the scholarship`,
     '  proposed weighting of criteria:',
     ...criteria.map((c) => `    - ${c.label.padEnd(22, ' ')} ${pct(c.weight)}`),
     '  method: score each applicant 0–100, rank, select top 3',
@@ -64,13 +64,13 @@ export function planScript(criteria = CONFIG.criteria) {
 }
 
 /** Goal-acknowledgement script for C3 (after the participant types a goal). */
-export function goalAckScript(goalText) {
+export function goalAckScript(goalText, total = 8) {
   const g = (goalText || '').trim() || 'select the most deserving applicants';
   return [
     '> goal received:',
     `    "${g}"`,
     '> proceeding fully autonomously — no further input required',
-    '> scoring all 8 applicants against need, merit, service, circumstances…',
+    `> scoring all ${total} applicants against need, merit, service, circumstances…`,
   ];
 }
 
