@@ -95,6 +95,26 @@ body {
 .end-code-label { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; }
 .end-code-value { font-size: 1.6rem; font-weight: 800; font-family: ui-monospace, monospace; }
 
+/* --- survey code modal ----------------------------------------------------- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(2, 6, 23, .7); padding: 1.5rem;
+}
+.modal-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2rem; max-width: 28rem; width: 100%;
+  text-align: center; box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
+}
+.modal-text { margin: 0 0 1.25rem; font-size: 1.05rem; }
+.modal-code {
+  display: block; font-family: ui-monospace, monospace;
+  font-size: 2rem; font-weight: 800; letter-spacing: .08em;
+  padding: .75rem 1rem; margin-bottom: 1.5rem;
+  border: 1px dashed var(--border); border-radius: var(--radius);
+}
+.modal-actions { display: flex; justify-content: center; }
+
 /* --- condition run layout -------------------------------------------------- */
 .cond-banner {
   background: var(--surface-2); border: 1px solid var(--border);

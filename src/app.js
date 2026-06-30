@@ -166,6 +166,28 @@ class App {
       ]),
     ]));
     this.logger.logEvent('complete', { payload: { phase: 'session_end', completionCode: code } });
+
+    // Autonomy-version survey code popup (C1 = low, C3 = high). Shown only for a
+    // single-condition standalone run; C2 and the full within-subject flow get none.
+    const surveyCode = surveyReturnCode(this.order);
+    if (surveyCode) this.showCodeModal(surveyCode);
+  }
+
+  /** Centered modal over the end screen showing the survey return code. */
+  showCodeModal(code) {
+    const close = () => overlay.remove();
+    const overlay = el('div', { class: 'modal-overlay' }, [
+      el('div', { class: 'modal-card', role: 'dialog', 'aria-modal': 'true' }, [
+        el('p', { class: 'modal-text', text:
+          'Please return to the survey page and enter the following code:' }),
+        el('span', { class: 'modal-code', text: code }),
+        el('div', { class: 'modal-actions' }, [
+          button('확인', close, 'primary'),
+        ]),
+      ]),
+    ]);
+    this.root.appendChild(overlay);
+    this.logger.logEvent('survey_code_shown', { payload: { surveyCode: code } });
   }
 }
 
@@ -204,6 +226,14 @@ function parseOrder(cond) {
   const unique = [...new Set(parts)];
   const ok = unique.length >= 1 && unique.length <= 3 && unique.every((p) => valid.has(p));
   return ok ? unique : CONFIG.defaultConditionOrder.split('-');
+}
+
+// Survey return code by autonomy version. Participants type this back into the
+// survey, so it must stay stable. Only the low (C1) and high (C3) autonomy
+// standalone runs show a popup; C2 and multi-condition runs return null.
+const SURVEY_CODES = { C1: 'LW1234', C3: 'HH5678' };
+function surveyReturnCode(order) {
+  return order.length === 1 ? (SURVEY_CODES[order[0]] || null) : null;
 }
 
 function completionCode(ctx) {
